@@ -24,11 +24,32 @@ jobs:
         with:
           ref: main
 
+      - name: Set Issue Data
+        id: set-data
+        shell: bash
+        run: |
+          LABELS_JSON='${{ toJson(github.event.issue.labels) }}'
+          echo "Detected labels: $LABELS_JSON"
+          if echo "$LABELS_JSON" | grep -iq '"name":\s*"bug"'; then
+            echo "ISSUE_TYPE=버그" >> $GITHUB_ENV
+            echo "TEMPLATE_PATH=.github/ISSUE_TEMPLATE/bug-form.yml" >> $GITHUB_ENV
+            echo "Label 'bug' detected. Using Bug settings."
+          elif echo "$LABELS_JSON" | grep -iq '"name":\s*"feat"'; then
+            echo "ISSUE_TYPE=작업" >> $GITHUB_ENV
+            echo "TEMPLATE_PATH=.github/ISSUE_TEMPLATE/feature-form.yml" >> $GITHUB_ENV
+            echo "Label 'feat' detected. Using Feature settings."
+          else
+            # 기본값: Feature로 처리하도록 설정 (필요에 따라 수정)
+            echo "ISSUE_TYPE=작업" >> $GITHUB_ENV
+            echo "TEMPLATE_PATH=.github/ISSUE_TEMPLATE/feature-form.yml" >> $GITHUB_ENV
+            echo "No matching label found. Defaulting to Feature settings."
+          fi
+
       - name: Issue Parser
         uses: stefanbuck/github-issue-praser@v3
         id: issue-parser
         with:
-          template-path: .github/ISSUE_TEMPLATE/feature-form.yml
+          template-path: ${{ env.TEMPLATE_PATH }}
 
       - name: Log Issue Parser
         run: |
@@ -52,7 +73,7 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: DEV
-          issuetype: 작업
+          issuetype: ${{ env.ISSUE_TYPE }}
           summary: '${{ github.event.issue.title }}'
           description: '${{ steps.md2jira.outputs.output-text }}'
           fields: |
