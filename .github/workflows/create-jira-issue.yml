@@ -1,3 +1,6 @@
+permissions:
+  issues: write
+
 name: Create Jira issue
 on:
   issues:
