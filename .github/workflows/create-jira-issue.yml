@@ -8,7 +8,6 @@ on:
       - opened
 jobs:
   create-issue:
-    if: contains(github.event.issue.labels.*.name, 'feat')
     name: Create Jira issue
     runs-on: ubuntu-latest
     steps:
