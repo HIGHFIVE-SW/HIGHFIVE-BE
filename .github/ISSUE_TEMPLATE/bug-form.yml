@@ -1,6 +1,6 @@
 name: '🐛Bug'
 description: '버그 이슈를 생성합니다. 버그 및 오류 이슈 템플릿입니다.'
-labels: [bug]
+labels: bug
 title: '[Bug]'
 body:
   - type: input
@@ -12,7 +12,7 @@ body:
     validations:
       required: true
       
-  - type: input
+  - type: textarea
     id: description
     attributes:
       label: '📝 상세 내용(Description)'
