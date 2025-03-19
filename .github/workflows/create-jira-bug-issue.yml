@@ -7,7 +7,7 @@ on:
     types:
       - opened
     labels:
-      - [bug]
+      - bug
 jobs:
   create-issue:
     name: Create Jira issue
