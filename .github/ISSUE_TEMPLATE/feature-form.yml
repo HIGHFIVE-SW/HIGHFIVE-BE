@@ -1,5 +1,5 @@
 name: '✨Feature'
-description: '✨Feature 이슈를 생성합니다. 기능 추가 이슈 템플릿입니다.'
+description: 'Feature 이슈를 생성합니다. 기능 추가 이슈 템플릿입니다.'
 labels: [feat]
 title: '[Feature]'
 body:
