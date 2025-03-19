@@ -24,27 +24,26 @@ jobs:
         with:
           ref: main
 
-      - name: Set Issue Data
+      - name: Set Issue Data Based on Title
         id: set-data
         shell: bash
         run: |
-          LABELS_JSON='${{ toJson(github.event.issue.labels) }}'
-          echo "Detected labels: $LABELS_JSON"
-          if echo "$LABELS_JSON" | grep -iq '"name":\s*"bug"'; then
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          echo "Detected issue title: $ISSUE_TITLE"
+          if echo "$ISSUE_TITLE" | grep -iq '\[Bug\]'; then
             echo "ISSUE_TYPE=버그" >> $GITHUB_ENV
             echo "TEMPLATE_PATH=.github/ISSUE_TEMPLATE/bug-form.yml" >> $GITHUB_ENV
-            echo "Label 'bug' detected. Using Bug settings."
-          elif echo "$LABELS_JSON" | grep -iq '"name":\s*"feat"'; then
+            echo "Bug issue detected based on title."
+          elif echo "$ISSUE_TITLE" | grep -iq '\[Feature\]'; then
             echo "ISSUE_TYPE=작업" >> $GITHUB_ENV
             echo "TEMPLATE_PATH=.github/ISSUE_TEMPLATE/feature-form.yml" >> $GITHUB_ENV
-            echo "Label 'feat' detected. Using Feature settings."
+            echo "Feature issue detected based on title."
           else
-            # 기본값: Feature로 처리하도록 설정 (필요에 따라 수정)
             echo "ISSUE_TYPE=작업" >> $GITHUB_ENV
             echo "TEMPLATE_PATH=.github/ISSUE_TEMPLATE/feature-form.yml" >> $GITHUB_ENV
-            echo "No matching label found. Defaulting to Feature settings."
+            echo "No specific issue type detected. Defaulting to Feature settings."
           fi
-
+          
       - name: Issue Parser
         uses: stefanbuck/github-issue-praser@v3
         id: issue-parser
