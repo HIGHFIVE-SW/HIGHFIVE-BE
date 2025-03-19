@@ -7,7 +7,7 @@ on:
     types:
       - opened
     labels:
-      - [feat]
+      - feat
 jobs:
   create-issue:
     name: Create Jira issue
